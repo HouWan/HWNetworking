@@ -190,6 +190,7 @@ extension HWNetworking {
 **Github地址**，[GitHub点我](https://github.com/HouWan/HWNetworking)或者复制下面链接：
 <https://github.com/HouWan/HWNetworking>
 
+> 从github上clone下以后，cd到目录`SwiftDemo`，执行`pod install`命令即可运行Demo
 
 ----
 
