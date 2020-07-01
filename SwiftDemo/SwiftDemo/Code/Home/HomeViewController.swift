@@ -27,6 +27,8 @@ class HomeViewController: DBaseVC {
         // 由于可能多个地方需要知道网络状态，所以添加通知`kNetworkStatusNotification`即可
         // 在通知回调方法里面，判断`HN.networkStatus`即可
         HN.startMonitoring()
+        
+        
     }
     
     // get请求
@@ -76,4 +78,5 @@ class HomeViewController: DBaseVC {
             debugPrint("failed: \(error)")
         }
     }
+    
 }

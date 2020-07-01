@@ -193,9 +193,9 @@ extension HWNetworking {
     /// Creates a POST request for upload data
     /// - note: more see: `self.request(...)`
     @discardableResult
-    public func POST(url: String, parameters: [String: String]? = nil, datas: [HWMultipartData]? = nil, headers: [String: String]? = nil) -> HWNetworkRequest {
+    public func POST(url: String, parameters: [String: String]? = nil, headers: [String: String]? = nil, datas: [HWMultipartData]? = nil) -> HWNetworkRequest {
         guard datas != nil else {
-            return POST(url: url, parameters: parameters)
+            return request(url: url, method: .post, parameters: parameters, headers: nil)
         }
         return upload(url: url, parameters: parameters, datas: datas!, headers: headers)
     }
