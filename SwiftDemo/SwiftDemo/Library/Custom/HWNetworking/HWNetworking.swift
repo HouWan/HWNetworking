@@ -26,11 +26,8 @@
 // ======`-.____`-.___\_____/___.-`____.-'======
 //
 
-
-
 import Foundation
 import Alamofire
-
 
 /// Closure type executed when the request is successful
 public typealias HNSuccessClosure = (_ JSON: Any) -> Void
@@ -38,7 +35,6 @@ public typealias HNSuccessClosure = (_ JSON: Any) -> Void
 public typealias HNFailedClosure = (_ error: Any) -> Void
 /// Closure type executed when monitoring the upload or download progress of a request.
 public typealias HNProgressHandler = (Progress) -> Void
-
 
 /// Defines the various states of network reachability.
 public enum HWReachabilityStatus {
@@ -52,7 +48,6 @@ public enum HWReachabilityStatus {
     case cellular
 }
 
-
 // ============================================================================
 
 /// Reference to `HWNetworking.shared` for quick bootstrapping and examples.
@@ -64,7 +59,7 @@ public let kNetworkStatusNotification = NSNotification.Name("kNetworkStatusNotif
 
 // ============================================================================
 
-
+/// `HWNetworking`网络请求主类
 public class HWNetworking {
     /// For singleton pattern
     public static let shared = HWNetworking()
@@ -72,14 +67,14 @@ public class HWNetworking {
     private var taskQueue = [HWNetworkRequest]()
     /// `Session` creates and manages Alamofire's `Request` types during their lifetimes.
     var sessionManager: Alamofire.Session!
-    
+
     /// Network reachability manager, The first call to method `startMonitoring()` will be initialized.
-    var reachability: NetworkReachabilityManager? = nil
+    var reachability: NetworkReachabilityManager?
     /// The newwork status, `.unknown` by default, You need to call the `startMonitoring()` method
     var networkStatus: HWReachabilityStatus = .unknown
 
     // MARK: - Core method
-        
+
     /// Initialization
     /// `private` for singleton pattern
     private init() {
@@ -88,8 +83,7 @@ public class HWNetworking {
         config.timeoutIntervalForResource = 20  // Timeout interval
         sessionManager = Alamofire.Session(configuration: config)
     }
-    
-    
+
     /// Creates a `DataRequest` from a `URLRequest` created using the passed components
     ///
     /// - Parameters:
@@ -104,19 +98,19 @@ public class HWNetworking {
                         headers: [String: String]? = nil,
                         encoding: ParameterEncoding = URLEncoding.default) -> HWNetworkRequest {
         let task = HWNetworkRequest()
-        
-        var h: HTTPHeaders? = nil
+
+        var h: HTTPHeaders?
         if let tempHeaders = headers {
             h = HTTPHeaders(tempHeaders)
         }
-        
+
         task.request = sessionManager.request(url,
                                               method: method,
                                               parameters: parameters,
                                               encoding: encoding,
                                               headers: h).validate().responseJSON { [weak self] response in
             task.handleResponse(response: response)
-            
+
             if let index = self?.taskQueue.firstIndex(of: task) {
                 self?.taskQueue.remove(at: index)
             }
@@ -124,8 +118,7 @@ public class HWNetworking {
         taskQueue.append(task)
         return task
     }
-    
-    
+
     /// Creates a `UploadRequest` from a `URLRequest` created using the passed components
     ///
     /// - Parameters:
@@ -141,12 +134,12 @@ public class HWNetworking {
                        datas: [HWMultipartData],
                        headers: [String: String]? = nil) -> HWNetworkRequest {
         let task = HWNetworkRequest()
-        
-        var h: HTTPHeaders? = nil
+
+        var h: HTTPHeaders?
         if let tempHeaders = headers {
             h = HTTPHeaders(tempHeaders)
         }
-        
+
         task.request = sessionManager.upload(multipartFormData: { (multipartData) in
             // 1.参数 parameters
             if let parameters = parameters {
@@ -162,34 +155,33 @@ public class HWNetworking {
             task.handleProgress(progress: progress)
         }).validate().responseJSON(completionHandler: { [weak self] response in
             task.handleResponse(response: response)
-            
+
             if let index = self?.taskQueue.firstIndex(of: task) {
                 self?.taskQueue.remove(at: index)
             }
         })
         return task
     }
-     
-    
+
     /// Creates a `DownloadRequest`...
     /// - warning: Has not been implemented
     /// - Returns: The created `DownloadRequest`.
     public func download(url: String, method: HTTPMethod = .post) -> HWNetworkRequest {
-        // TODO...
+        // has not been implemented
         fatalError("download(...) has not been implemented")
     }
 }
 
 /// Shortcut method for `HWNetworking`
 extension HWNetworking {
-        
+
     /// Creates a POST request
     /// - note: more see: `self.request(...)`
     @discardableResult
     public func POST(url: String, parameters: [String: Any]? = nil, headers: [String: String]? = nil) -> HWNetworkRequest {
         request(url: url, method: .post, parameters: parameters, headers: nil)
     }
-    
+
     /// Creates a POST request for upload data
     /// - note: more see: `self.request(...)`
     @discardableResult
@@ -199,7 +191,7 @@ extension HWNetworking {
         }
         return upload(url: url, parameters: parameters, datas: datas!, headers: headers)
     }
-    
+
     /// Creates a GET request
     /// - note: more see: `self.request(...)`
     @discardableResult
@@ -208,7 +200,6 @@ extension HWNetworking {
     }
 }
 
-
 /// Detect network status 监听网络状态
 extension HWNetworking {
     /// Starts monitoring for changes in network reachability status.
@@ -216,7 +207,7 @@ extension HWNetworking {
         if reachability == nil {
             reachability = NetworkReachabilityManager.default
         }
-        
+
         reachability?.startListening(onQueue: .main, onUpdatePerforming: { [unowned self] (status) in
             switch status {
             case .notReachable:
@@ -230,10 +221,10 @@ extension HWNetworking {
             }
             // Sent notification
             NotificationCenter.default.post(name: kNetworkStatusNotification, object: nil)
-            debugPrint("sssssss: \(self.networkStatus)")
+            debugPrint("HWNetworking Network Status: \(self.networkStatus)")
         })
     }
-    
+
     /// Stops monitoring for changes in network reachability status.
     public func stopMonitoring() {
         guard reachability != nil else { return }
@@ -241,49 +232,45 @@ extension HWNetworking {
     }
 }
 
-
-
 /// RequestTask
 public class HWNetworkRequest: Equatable {
-    
+
     /// Alamofire.DataRequest
     var request: DataRequest?
-    
+
     /// request response callback
     private var successHandler: HNSuccessClosure?
     /// request failed callback
     private var failedHandler: HNFailedClosure?
     /// `ProgressHandler` provided for upload/download progress callbacks.
     private var progressHandler: HNProgressHandler?
-    
-    
+
     // MARK: - Handler
-    
+
     /// Handle request response
     func handleResponse(response: AFDataResponse<Any>) {
         switch response.result {
         case .failure(let error):
-            if let closure = failedHandler  {
+            if let closure = failedHandler {
                 closure(error.localizedDescription)
             }
-   
         case .success(let JSON):
-            if let closure = successHandler  {
+            if let closure = successHandler {
                 closure(JSON)
             }
         }
         clearReference()
     }
-    
+
     /// Processing request progress (Only when uploading files)
     func handleProgress(progress: Foundation.Progress) {
-        if let closure = progressHandler  {
+        if let closure = progressHandler {
             closure(progress)
         }
     }
-    
+
     // MARK: - Callback
-    
+
     /// Adds a handler to be called once the request has finished.
     ///
     /// - Parameters:
@@ -295,7 +282,7 @@ public class HWNetworkRequest: Equatable {
         successHandler = closure
         return self
     }
-    
+
     /// Adds a handler to be called once the request has finished.
     ///
     /// - Parameters:
@@ -307,7 +294,7 @@ public class HWNetworkRequest: Equatable {
         failedHandler = closure
         return self
     }
-    
+
     /// Sets a closure to be called periodically during the lifecycle of the instance as data is sent to the server.
     ///
     /// - Note: Only the last closure provided is used.
@@ -321,7 +308,7 @@ public class HWNetworkRequest: Equatable {
         progressHandler = closure
         return self
     }
-    
+
     /// Free memory
     func clearReference() {
         successHandler = nil
@@ -338,11 +325,9 @@ extension HWNetworkRequest {
     }
 }
 
-
 // ============================================================================
 // ================================Boundary====================================
 // ============================================================================
-
 
 /// HWMultipartData for upload datas, eg: images/photos
 public class HWMultipartData {
@@ -352,28 +337,36 @@ public class HWMultipartData {
     let name: String
     /// Filename to associate with the `Data` in the `Content-Disposition` HTTP header.
     let fileName: String
-    /// The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types, see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
+    /// The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types
+    /// see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
     let mimeType: String
-    
-    
+
     /// Create HWMultipartDataModel
     /// - Parameters:
     ///   - data: The data to be encoded and appended to the form data.
     ///   - name: The name to be associated with the specified data.
     ///   - fileName: The filename to be associated with the specified data.
     ///   - mimeType: The MIME type of the specified data. eg: image/jpeg
-    init(data: Data, name: String, fileName:String, mimeType: String) {
+    init(data: Data, name: String, fileName: String, mimeType: String) {
         self.data = data
         self.name = name
         self.fileName = fileName
         self.mimeType = mimeType
-        
-    
+    }
+
+    /// Create HWMultipartDataModel
+    /// - Parameters:
+    ///   - data: The data to be encoded and appended to the form data.
+    ///   - name: The name to be associated with the specified data.
+    ///   - fileName: The filename to be associated with the specified data.
+    ///   - type: The MIME type of the specified data. eg: image/jpeg
+    convenience init(data: Data, name: String, fileName: String, type: HWDataMimeType) {
+        self.init(data: data, name: name, fileName: fileName, mimeType: type.rawValue)
     }
 
     // mimeType --> image/jpeg, image/png, image/gif,
     // see: https://www.cnblogs.com/fuqiang88/p/4618652.html
-    
+
     // 中文说明一下，增加理解：
     // 当提交一张图片或一个文件的时候 name 可以随便设置，服务端直接能拿到，如果服务端需要根据name去取不同文件的时候
     // 则appendPartWithFileData 方法中的 name 需要根据form的中的name一一对应
