@@ -8,7 +8,7 @@
 
 import Foundation
 
-class CoachListModel: HandyJSON {
+class CoachListModel {
     var deptName: String?
     var coverPic: String?
     var product_price: Double?

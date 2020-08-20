@@ -32,7 +32,7 @@ import Alamofire
 /// Closure type executed when the request is successful
 public typealias HNSuccessClosure = (_ JSON: Any) -> Void
 /// Closure type executed when the request is failed
-public typealias HNFailedClosure = (_ error: Any) -> Void
+public typealias HNFailedClosure = (_ error: HWNetworkingError) -> Void
 /// Closure type executed when monitoring the upload or download progress of a request.
 public typealias HNProgressHandler = (Progress) -> Void
 
@@ -164,6 +164,7 @@ public class HWNetworking {
     }
 
     /// Creates a `DownloadRequest`...
+    ///
     /// - warning: Has not been implemented
     /// - Returns: The created `DownloadRequest`.
     public func download(url: String, method: HTTPMethod = .post) -> HWNetworkRequest {
@@ -176,6 +177,7 @@ public class HWNetworking {
 extension HWNetworking {
 
     /// Creates a POST request
+    ///
     /// - note: more see: `self.request(...)`
     @discardableResult
     public func POST(url: String, parameters: [String: Any]? = nil, headers: [String: String]? = nil) -> HWNetworkRequest {
@@ -183,6 +185,7 @@ extension HWNetworking {
     }
 
     /// Creates a POST request for upload data
+    ///
     /// - note: more see: `self.request(...)`
     @discardableResult
     public func POST(url: String, parameters: [String: String]? = nil, headers: [String: String]? = nil, datas: [HWMultipartData]? = nil) -> HWNetworkRequest {
@@ -193,6 +196,7 @@ extension HWNetworking {
     }
 
     /// Creates a GET request
+    ///
     /// - note: more see: `self.request(...)`
     @discardableResult
     public func GET(url: String, parameters: [String: Any]? = nil, headers: [String: String]? = nil) -> HWNetworkRequest {
@@ -237,6 +241,10 @@ public class HWNetworkRequest: Equatable {
 
     /// Alamofire.DataRequest
     var request: DataRequest?
+    /// API description information. default: nil
+    var description: String?
+    /// API additional information, eg: Author | Note...,  default: nil
+    var extra: String?
 
     /// request response callback
     private var successHandler: HNSuccessClosure?
@@ -252,7 +260,8 @@ public class HWNetworkRequest: Equatable {
         switch response.result {
         case .failure(let error):
             if let closure = failedHandler {
-                closure(error.localizedDescription)
+                let hwe = HWNetworkingError(code: error.responseCode ?? -1, desc: error.localizedDescription)
+                closure(hwe)
             }
         case .success(let JSON):
             if let closure = successHandler {
@@ -309,6 +318,13 @@ public class HWNetworkRequest: Equatable {
         return self
     }
 
+    /// Cancels the instance. Once cancelled, a `Request` can no longer be resumed or suspended.
+    ///
+    /// - Returns: The instance.
+    func cancel() {
+        request?.cancel()
+    }
+
     /// Free memory
     func clearReference() {
         successHandler = nil
@@ -323,64 +339,4 @@ extension HWNetworkRequest {
     public static func == (lhs: HWNetworkRequest, rhs: HWNetworkRequest) -> Bool {
         return lhs.request?.id == rhs.request?.id
     }
-}
-
-// ============================================================================
-// ================================Boundary====================================
-// ============================================================================
-
-/// HWMultipartData for upload datas, eg: images/photos
-public class HWMultipartData {
-    /// The data to be encoded and appended to the form data.
-    let data: Data
-    /// Name to associate with the `Data` in the `Content-Disposition` HTTP header.
-    let name: String
-    /// Filename to associate with the `Data` in the `Content-Disposition` HTTP header.
-    let fileName: String
-    /// The MIME type of the specified data. (For example, the MIME type for a JPEG image is image/jpeg.) For a list of valid MIME types
-    /// see http://www.iana.org/assignments/media-types/. This parameter must not be `nil`.
-    let mimeType: String
-
-    /// Create HWMultipartDataModel
-    /// - Parameters:
-    ///   - data: The data to be encoded and appended to the form data.
-    ///   - name: The name to be associated with the specified data.
-    ///   - fileName: The filename to be associated with the specified data.
-    ///   - mimeType: The MIME type of the specified data. eg: image/jpeg
-    init(data: Data, name: String, fileName: String, mimeType: String) {
-        self.data = data
-        self.name = name
-        self.fileName = fileName
-        self.mimeType = mimeType
-    }
-
-    /// Create HWMultipartDataModel
-    /// - Parameters:
-    ///   - data: The data to be encoded and appended to the form data.
-    ///   - name: The name to be associated with the specified data.
-    ///   - fileName: The filename to be associated with the specified data.
-    ///   - type: The MIME type of the specified data. eg: image/jpeg
-    convenience init(data: Data, name: String, fileName: String, type: HWDataMimeType) {
-        self.init(data: data, name: name, fileName: fileName, mimeType: type.rawValue)
-    }
-
-    // mimeType --> image/jpeg, image/png, image/gif,
-    // see: https://www.cnblogs.com/fuqiang88/p/4618652.html
-
-    // 中文说明一下，增加理解：
-    // 当提交一张图片或一个文件的时候 name 可以随便设置，服务端直接能拿到，如果服务端需要根据name去取不同文件的时候
-    // 则appendPartWithFileData 方法中的 name 需要根据form的中的name一一对应
-    // 所以name的值，是需要跟后台服务端商量好的.
-}
-
-/// 常见数据类型的`MIME Type`
-public enum HWDataMimeType: String {
-    case JPEG = "image/jpeg"
-    case PNG = "image/png"
-    case GIF = "image/gif"
-    case HEIC = "image/heic"
-    case HEIF = "image/heif"
-    case WEBP = "image/webp"
-    case TIF = "image/tif"
-    case JSON = "application/json"
 }

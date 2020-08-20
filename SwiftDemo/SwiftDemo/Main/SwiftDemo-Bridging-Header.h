@@ -51,7 +51,6 @@
 
 /// ***********************第三方***********************
 #import <Alamofire/Alamofire-Swift.h>
-#import <HandyJSON/HandyJSON-Swift.h>
 #import <SwiftyJSON/SwiftyJSON-Swift.h>
 
 

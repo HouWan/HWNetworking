@@ -18,8 +18,9 @@ class HomeViewController: DBaseVC {
         title = "首页"
         
         let a = UILabel(font: SemiboldFont(16), color: UIColor.blue)
-        a.text = "用法直接看`HomeViewController`类即可"
-        a.frame = CGRect(x: 10, y: 100, width: view.width, height: 55)
+        a.numberOfLines = 0;
+        a.text = "用法直接看`HomeViewController`类即可\n\nOC的调用方式，和`HomeViewController`在同一个目录下"
+        a.frame = CGRect(x: 10, y: 100, width: view.width - 20, height: 165)
         view.addSubview(a)
         
         
@@ -27,11 +28,72 @@ class HomeViewController: DBaseVC {
         // 由于可能多个地方需要知道网络状态，所以添加通知`kNetworkStatusNotification`即可
         // 在通知回调方法里面，判断`HN.networkStatus`即可
         HN.startMonitoring()
-        
-        
+    }
+
+    /// **测试用例** post
+    func test_post_a() {
+        let p: [String: Any] = ["city": "北京市", "locatex": 0, "locatey": 0, "num": 2]
+        HN.POST(url: API.Home.storeList.url, parameters: p).success { response in
+            print("response -->", response)
+        }.failed { error in
+            print("error -->", error)
+        }
+    }
+
+    /// **测试用例** post
+    func test_post_b() {
+        let p: [String: Any] = ["city": "北京市", "locatex": 0, "locatey": 0, "num": 2]
+        HN.fetch(API.Home.storeList, parameters: p).success { response in
+            print("response -->", response)
+        }.failed { error in
+            print("error -->", error)
+        }
+    }
+
+    /// **测试用例** post
+    func test_post_c() {
+        let p: [String: Any] = ["city": "北京市", "locatex": 0, "locatey": 0, "num": 2]
+        API.Home.storeList.fetch(p, success: {response in
+            print("response -->", response)
+        }, failed: {error in
+            print("error -->", error)
+        })
+    }
+
+    /// **测试用例** get
+    func test_get_a() {
+        let p = ["userId": "02363BC2523811E68BD95CB9018916241119"]
+
+        API.Me.meIndex.fetch(p, success: {response in
+            print("response -->", response)
+        }, failed: {error in
+            print("error -->", error)
+        })
+    }
+
+    /// **测试用例** get
+    func test_get_b() {
+        let p = ["userId": "02363BC2523811E68BD95CB9018916241119"]
+
+        HN.fetch(API.Me.meIndex, parameters: p).success { response in
+            print("response -->", response)
+        }.failed { error in
+            print("error -->", error)
+        }
+    }
+
+    /// **测试用例** get
+    func test_get_c() {
+        let p = ["userId": "02363BC2523811E68BD95CB9018916241119"]
+
+        API.Me.meIndex.fetch(p).success { response in
+            print("response -->", response)
+        }.failed { error in
+            print("error -->", error)
+        }
     }
     
-    // get请求
+    /// **测试用例** get请求
     func get() {
         let url = "https://demo.xx.com/get/"
         let p: [String : Any] = ["name": "demo", "age": 18]
@@ -43,7 +105,7 @@ class HomeViewController: DBaseVC {
         }
     }
     
-    // post请求
+    /// **测试用例** post请求
     func post() {
         let url = "https://demo.xx.com/get/"
         let p: [String : Any] = ["name": "demo", "age": 18]
@@ -55,7 +117,7 @@ class HomeViewController: DBaseVC {
         }
     }
     
-    // 上传图片
+    /// **测试用例** 上传图片
     func photo() {
         let url = "https://demo.xx.com/get/"
         let p: [String : String] = ["name": "demo", "age": "18"]

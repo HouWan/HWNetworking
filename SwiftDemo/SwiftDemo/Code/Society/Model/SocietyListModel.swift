@@ -9,7 +9,7 @@
 import Foundation
 
 
-class SocietyListModel: NSObject, HandyJSON {
+class SocietyListModel: NSObject {
     /// 用户头像
     var image: String?
     /// 发帖内容

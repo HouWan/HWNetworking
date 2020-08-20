@@ -32,6 +32,12 @@
 		87C9535F2464FBC7005B06B7 /* UILabel-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C9535E2464FBC7005B06B7 /* UILabel-Extension.swift */; };
 		87C953612464FEB3005B06B7 /* UIFont-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C953602464FEB3005B06B7 /* UIFont-Extension.swift */; };
 		87E13F4E246716BE008F2C7D /* SocietyListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E13F4D246716BE008F2C7D /* SocietyListCell.swift */; };
+		87F468A024EE7E3600904F53 /* HWMultipartData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F4689E24EE7E3600904F53 /* HWMultipartData.swift */; };
+		87F468A124EE7E3600904F53 /* HWAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F4689F24EE7E3600904F53 /* HWAPI.swift */; };
+		87F468A424EE7E3D00904F53 /* HWNetworkingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F468A224EE7E3D00904F53 /* HWNetworkingError.swift */; };
+		87F468A524EE7E3D00904F53 /* HWNetworkingOC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F468A324EE7E3D00904F53 /* HWNetworkingOC.swift */; };
+		87F468A724EE9B6000904F53 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F468A624EE9B6000904F53 /* API.swift */; };
+		87F468AA24EEA06900904F53 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87F468A924EEA06900904F53 /* TestViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +83,13 @@
 		87C9535E2464FBC7005B06B7 /* UILabel-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel-Extension.swift"; sourceTree = "<group>"; };
 		87C953602464FEB3005B06B7 /* UIFont-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont-Extension.swift"; sourceTree = "<group>"; };
 		87E13F4D246716BE008F2C7D /* SocietyListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocietyListCell.swift; sourceTree = "<group>"; };
+		87F4689E24EE7E3600904F53 /* HWMultipartData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HWMultipartData.swift; sourceTree = "<group>"; };
+		87F4689F24EE7E3600904F53 /* HWAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HWAPI.swift; sourceTree = "<group>"; };
+		87F468A224EE7E3D00904F53 /* HWNetworkingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HWNetworkingError.swift; sourceTree = "<group>"; };
+		87F468A324EE7E3D00904F53 /* HWNetworkingOC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HWNetworkingOC.swift; sourceTree = "<group>"; };
+		87F468A624EE9B6000904F53 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		87F468A824EEA06900904F53 /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
+		87F468A924EEA06900904F53 /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
 		A819D687B3383DBEE74FFC39 /* Pods_SwiftDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4B5AFF62E6B4D4DEF54E3BD /* Pods_SwiftDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -169,6 +182,7 @@
 				87504C3B2463BDD0007FF576 /* Controller */,
 				87504BFE2463AC85007FF576 /* AppDelegate.swift */,
 				87504C402463D754007FF576 /* SwiftDemo-Bridging-Header.h */,
+				87F468A624EE9B6000904F53 /* API.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -199,6 +213,8 @@
 			isa = PBXGroup;
 			children = (
 				87504C312463BD6C007FF576 /* HomeViewController.swift */,
+				87F468A824EEA06900904F53 /* TestViewController.h */,
+				87F468A924EEA06900904F53 /* TestViewController.m */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -311,7 +327,11 @@
 		87B1E5792467E25A00E4A2F6 /* HWNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				87F4689F24EE7E3600904F53 /* HWAPI.swift */,
+				87F4689E24EE7E3600904F53 /* HWMultipartData.swift */,
 				87B1E57A2467E27D00E4A2F6 /* HWNetworking.swift */,
+				87F468A224EE7E3D00904F53 /* HWNetworkingError.swift */,
+				87F468A324EE7E3D00904F53 /* HWNetworkingOC.swift */,
 			);
 			path = HWNetworking;
 			sourceTree = "<group>";
@@ -510,16 +530,22 @@
 				87504C3F2463BFB1007FF576 /* DBaseVC.swift in Sources */,
 				87504C2E2463B34A007FF576 /* DNavigationController.swift in Sources */,
 				875F3F0A246685820009E607 /* AppConstants.swift in Sources */,
+				87F468A124EE7E3600904F53 /* HWAPI.swift in Sources */,
 				877AB67924659E09009D975B /* Theme.swift in Sources */,
 				87C953612464FEB3005B06B7 /* UIFont-Extension.swift in Sources */,
+				87F468A424EE7E3D00904F53 /* HWNetworkingError.swift in Sources */,
 				8784A2BA24641933002A46FA /* UIColor-Extension.swift in Sources */,
 				87504C302463BD38007FF576 /* DTabBarController.swift in Sources */,
+				87F468AA24EEA06900904F53 /* TestViewController.m in Sources */,
 				8784A2BD24642CBD002A46FA /* DTabBar.swift in Sources */,
 				87C9535F2464FBC7005B06B7 /* UILabel-Extension.swift in Sources */,
 				875F3F07246680410009E607 /* UIView-Extension.swift in Sources */,
+				87F468A024EE7E3600904F53 /* HWMultipartData.swift in Sources */,
 				87E13F4E246716BE008F2C7D /* SocietyListCell.swift in Sources */,
 				87504BFF2463AC85007FF576 /* AppDelegate.swift in Sources */,
+				87F468A524EE7E3D00904F53 /* HWNetworkingOC.swift in Sources */,
 				87504C382463BD91007FF576 /* GymViewController.swift in Sources */,
+				87F468A724EE9B6000904F53 /* API.swift in Sources */,
 				87504C342463BD7D007FF576 /* SocietyViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
