@@ -160,6 +160,7 @@ public class HWNetworking {
                 self?.taskQueue.remove(at: index)
             }
         })
+        taskQueue.append(task)
         return task
     }
 
