@@ -59,16 +59,52 @@ HN.GET(url: "api")
 
 3.1 结合`HWAPIProtocol`使用，这里新建一个`struct`去实现`HWAPIProtocol`:
 ```swift
+/// 实现协议，每个接口，都是一个`APIItem`
 struct APIItem: HWAPIProtocol {
-    var url: String { API.DOMAIN + URLPath }  // 域名 + path
+    /// 全路径URL = 域名 + path
+    private(set) var url: String
+    /// 接口概述
     let description: String
+    /// 额外信息
     let extra: String?
+    /// HTTPMethod, eg: POST
     var method: HWHTTPMethod
 
-    private let URLPath: String  // URL的path
+    /// 创建一个接口对象，使用PATH方式
+    ///
+    /// - Parameters:
+    ///   - path: URL的路径部分
+    ///   - d: 接口概述
+    ///   - e: 额外信息
+    ///   - m: eg: POST
+    init(_ path: String, d: String, e: String? = nil, m: HWHTTPMethod = .post) {
+        url = API.DOMAIN + path
+        description = d
+        extra = e
+        method = m
+    }
+    
+    /// 创建一个接口对象，使用PATH方式
+    ///
+    /// - Parameters:
+    ///   - path: URL的路径部分
+    ///   - m: eg: POST
+    init(_ path: String, m: HWHTTPMethod = .post) {
+        url = API.DOMAIN + path
+        description = path
+        extra = nil
+        method = m
+    }
 
-    init(_ path: String, d: String, e: String? = nil, m: HWHTTPMethod = .get) {
-        URLPath = path
+    /// 创建一个接口对象，使用URL全路径
+    ///
+    /// - Parameters:
+    ///   - path: URL的路径部分
+    ///   - d: 接口概述
+    ///   - e: 额外信息
+    ///   - m: eg: POST
+    init(url: String, d: String, e: String? = nil, m: HWHTTPMethod = .post) {
+        self.url = url
         description = d
         extra = e
         method = m
@@ -78,13 +114,14 @@ struct APIItem: HWAPIProtocol {
 
 3.2. 项目里面，写API的文件就可以设计为(模块化):
 ```swift
+/// App的接口
 struct API {
     static var DOMAIN = "https://www.baidu.com/"
 
     // MARK: Home模块
     struct Home {
         static let homeIndex = APIItem("homeIndex", d: "首页数据")
-        static let storeList = APIItem("homeIndex", d: "首页门店列表", m: .post)
+        static let storeList = APIItem("homeIndex", d: "首页门店列表", m: .get)
     }
 
     // MARK: 圈子模块
