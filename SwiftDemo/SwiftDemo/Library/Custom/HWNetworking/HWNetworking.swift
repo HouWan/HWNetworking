@@ -64,7 +64,7 @@ public class HWNetworking {
     /// For singleton pattern
     public static let shared = HWNetworking()
     /// TaskQueue Array for (`Alamofire.Request` & callback)
-    private var taskQueue = [HWNetworkRequest]()
+    private(set) var taskQueue = [HWNetworkRequest]()
     /// `Session` creates and manages Alamofire's `Request` types during their lifetimes.
     var sessionManager: Alamofire.Session!
 
