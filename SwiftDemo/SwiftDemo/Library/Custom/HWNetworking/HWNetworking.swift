@@ -256,7 +256,7 @@ extension HWNetworking {
 public class HWNetworkRequest: Equatable {
 
     /// Alamofire.DataRequest
-    var request: DataRequest?
+    var request: Alamofire.Request?
     /// API description information. default: nil
     var description: String?
     /// API additional information, eg: Author | Note...,  default: nil
