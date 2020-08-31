@@ -67,7 +67,7 @@ public extension HWNetworking {
     @discardableResult
     func fetch(_ api: HWAPIProtocol, parameters: [String: Any]? = nil, headers: [String: String]? = nil) -> HWNetworkRequest {
         let method = methodWith(api.method)
-        let task = request(url: api.url, method: method, parameters: parameters, headers: nil)
+        let task = request(url: api.url, method: method, parameters: parameters, headers: headers)
         task.description = api.description
         task.extra = api.extra
         return task
